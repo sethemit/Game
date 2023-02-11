@@ -1,41 +1,56 @@
+#include <SFML/Graphics.hpp>
 #include <iostream>
-#include <ctime>
-using namespace std;
 
-int main() {
-  int distance = 1000; // starting distance from Earth
-  int fuel = 500; // starting amount of fuel
-  int consume; // fuel consumed per turn
-  int turn = 1; // turn counter
-  
-  srand(time(0)); // seed the random number generator
-  
-  cout << "Welcome to the spaceship game!" << endl;
-  cout << "Your goal is to reach the end of your journey with as much fuel as possible." << endl;
-  
-  while (distance > 0) {
-    cout << "Turn " << turn << ": " << distance << " km to go, " << fuel << " fuel left." << endl;
-    cout << "How much fuel would you like to consume this turn (1-50)? ";
-    cin >> consume;
-    
-    if (consume >= 1 && consume <= 50) {
-      distance -= 100;
-      fuel -= consume;
-      turn++;
-      
-      if (fuel < 0) {
-        cout << "You have run out of fuel and failed to reach your destination." << endl;
-        break;
-      }
-      
-      if (distance < 0) {
-        cout << "Congratulations! You have reached your destination with " << fuel << " units of fuel left." << endl;
-        break;
-      }
-    } else {
-      cout << "Invalid input. Please enter a number between 1 and 50." << endl;
+int main()
+{
+    // Create the window
+    sf::RenderWindow window(sf::VideoMode(800, 600), "My Game");
+
+    // Load the textures
+    sf::Texture playerTexture;
+    if (!playerTexture.loadFromFile("player.png")) {
+        std::cout << "Error loading player texture" << std::endl;
+        return 1;
     }
-  }
-  
-  return 0;
+
+    // Create the player sprite
+    sf::Sprite player;
+    player.setTexture(playerTexture);
+    player.setPosition(400, 500);
+
+    // Start the game loop
+    while (window.isOpen()) {
+        // Handle events
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+
+        // Update the player
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            player.move(-5, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            player.move(5, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            player.move(0, -5);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            player.move(0, 5);
+        }
+
+        // Clear the window
+        window.clear();
+
+        // Draw the player
+        window.draw(player);
+
+        // Display the window
+        window.display();
+    }
+
+    return 0;
 }
